@@ -1,0 +1,107 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Admin {
+  admin_id   Int      @id @default(autoincrement())
+  email      String   @unique
+  password   String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model PetOwner {
+  pet_owner_id  Int      @id @default(autoincrement())
+  name          String?
+  email         String   @unique
+  password      String
+  date_of_birth String?
+  address       String?
+  phone         String?
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  pets          Pet[]
+  appointments  Appointment[]
+}
+
+model Pet {
+  pet_id              Int      @id @default(autoincrement())
+  pet_owner_id        Int
+  name                String
+  species             String
+  breed               String?
+  age                 Int?
+  medical_history     String?
+  allergies           String?
+  vaccination_records String?
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+
+  owner               PetOwner @relation(fields: [pet_owner_id], references: [pet_owner_id], onDelete: Cascade)
+  appointments        Appointment[]
+}
+
+model Vet {
+  vet_id         Int      @id @default(autoincrement())
+  name           String?
+  email          String   @unique
+  password       String
+  phone          String?
+  clinic_address String?
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  schedules      VetSchedule[]
+  appointments   Appointment[]
+}
+
+model VetSchedule {
+  schedule_id           Int      @id @default(autoincrement())
+  vet_id                Int
+  day_of_week           String   // Monday-Sunday
+  start_time            String   // HH:MM
+  end_time              String   // HH:MM
+  slot_duration_minutes Int      @default(30)
+  is_available          Boolean  @default(true)
+
+  vet                   Vet      @relation(fields: [vet_id], references: [vet_id], onDelete: Cascade)
+  appointments          Appointment[]
+}
+
+model Appointment {
+  appointment_id   Int      @id @default(autoincrement())
+  pet_owner_id     Int
+  vet_id           Int
+  schedule_id      Int
+  pet_id           Int
+  appointment_date String   // YYYY-MM-DD
+  appointment_time String   // HH:MM
+  status           String   @default("Scheduled")
+  reason_for_visit String?
+  treatment_notes  String?
+  diagnosis        String?
+  prescriptions    String?
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  pet_owner        PetOwner    @relation(fields: [pet_owner_id], references: [pet_owner_id], onDelete: Cascade)
+  vet              Vet         @relation(fields: [vet_id], references: [vet_id], onDelete: Cascade)
+  schedule         VetSchedule @relation(fields: [schedule_id], references: [schedule_id], onDelete: Cascade)
+  pet              Pet         @relation(fields: [pet_id], references: [pet_id], onDelete: Cascade)
+  payments         Payment[]
+}
+
+model Payment {
+  payment_id        Int      @id @default(autoincrement())
+  appointment_id    Int
+  payment_mode      String
+  payment_timestamp DateTime @default(now())
+
+  appointment       Appointment @relation(fields: [appointment_id], references: [appointment_id], onDelete: Cascade)
+}
