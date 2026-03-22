@@ -13,7 +13,7 @@ const OwnerDashboard = () => {
   useEffect(() => {
     const fetchPets = async () => {
       try {
-        const res = await axios.get('http://localhost:5005/api/pets', {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5005"}/api/pets`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setPets(res.data);

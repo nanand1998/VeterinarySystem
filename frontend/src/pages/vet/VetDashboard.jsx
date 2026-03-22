@@ -10,7 +10,7 @@ const VetDashboard = () => {
   useEffect(() => {
     const fetchAppts = async () => {
       try {
-        const res = await axios.get('http://localhost:5005/api/appointments', { headers: { Authorization: `Bearer ${token}` } });
+        const res = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5005"}/api/appointments`, { headers: { Authorization: `Bearer ${token}` } });
         setAppointments(res.data);
       } catch (err) { console.error(err); }
     };

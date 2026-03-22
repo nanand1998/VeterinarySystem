@@ -15,7 +15,7 @@ const Signup = () => {
     e.preventDefault();
     setError(null);
     try {
-      const res = await axios.post('http://localhost:5005/api/auth/register/owner', formData);
+      const res = await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5005"}/api/auth/register/owner`, formData);
       setAuth(res.data.user, res.data.token, res.data.role);
       navigate(`/${res.data.role}`);
     } catch (err) {

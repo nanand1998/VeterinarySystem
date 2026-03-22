@@ -15,8 +15,8 @@ const BookAppointment = () => {
     const fetchData = async () => {
       try {
         const [petsRes, vetsRes] = await Promise.all([
-          axios.get('http://localhost:5005/api/pets', { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get('http://localhost:5005/api/vets')
+          axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5005"}/api/pets`, { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5005"}/api/vets`)
         ]);
         setPets(petsRes.data);
         setVets(vetsRes.data);
@@ -47,7 +47,7 @@ const BookAppointment = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5005/api/appointments', formData, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5005"}/api/appointments`, formData, { headers: { Authorization: `Bearer ${token}` } });
       navigate('/owner');
     } catch (err) { 
       alert(err.response?.data?.message || 'Booking failed');

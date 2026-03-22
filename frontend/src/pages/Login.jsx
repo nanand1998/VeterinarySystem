@@ -17,7 +17,7 @@ const Login = () => {
     e.preventDefault();
     setError(null);
     try {
-      const res = await axios.post('http://localhost:5005/api/auth/login', { email, password, role });
+      const res = await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5005"}/api/auth/login`, { email, password, role });
       setAuth(res.data.user, res.data.token, res.data.role);
       navigate(`/${res.data.role}`);
     } catch (err) {
